@@ -1970,8 +1970,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Panel slider removed — single panel layout
-  (function initHSlider() { return; // disabled
-  (function initHSlider_disabled() {
+  (function initHSliderRemoved() {
+    return;
     const hOuter  = document.getElementById("h-outer");
     const hTrack  = document.getElementById("h-track");
     const dots    = document.querySelectorAll(".h-dot");
