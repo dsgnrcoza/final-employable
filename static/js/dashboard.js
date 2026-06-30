@@ -1104,7 +1104,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const uploadZone = document.getElementById("upload-zone");
   const fileInput = document.getElementById("file-input");
 
-  uploadZone.addEventListener("click", () => fileInput.click());
   fileInput.addEventListener("change", () => {
     if (fileInput.files.length) {
       const files = fileInput.files;
@@ -1368,9 +1367,8 @@ document.addEventListener("DOMContentLoaded", () => {
     el.addEventListener("click", () => switchView(el.getAttribute("data-view")));
   });
 
-  // Restore last active view on page load
-  const savedView = localStorage.getItem("emp_active_view") || "profile";
-  switchView(savedView);
+  // Always open on the profile/dashboard tab — never restore a non-dashboard tab on fresh load
+  switchView("profile");
 
   // ── Applications add ──
   const addApplicationBtn = document.getElementById("add-application-btn");
