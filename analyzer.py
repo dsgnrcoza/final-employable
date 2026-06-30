@@ -64,7 +64,7 @@ MODEL = "gpt-4o-mini"
 # hit, because doing it every time defeats the entire point of caching
 # (cost and speed) for a check you'd only ever act on rarely.
 AUDIT_SAMPLE_RATE = 0.02  # ~1 in 50 cache hits gets silently re-checked
-DRIFT_LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "drift_log.jsonl")
+DRIFT_LOG_PATH = "/tmp/drift_log.jsonl" if os.environ.get("VERCEL") else os.path.join(os.path.dirname(os.path.abspath(__file__)), "drift_log.jsonl")
 DRIFT_SCORE_THRESHOLD = 1.0  # dimension points apart before logging as drift
 DRIFT_CONFIDENCE_THRESHOLD = 10.0  # confidence_score points apart before logging
 
