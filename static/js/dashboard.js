@@ -95,10 +95,9 @@ function getInitials(name) {
 
 function setAvatarEl(el, profile) {
   if (!el) return;
-    if (profile.avatar_url) {
+  if (profile.avatar_url) {
     const url = profile.avatar_url + "?t=" + Date.now();
-    const initials = getInitials(profile.full_name || "JS");
-    el.innerHTML = `<img src="${escapeHtml(url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initials}'">`;
+    el.innerHTML = `<img src="${escapeHtml(url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
   } else {
     el.textContent = getInitials(profile.full_name || "JS");
   }
@@ -1970,10 +1969,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (activePanel) animateCardsIn(activePanel);
   });
 
-  // ══════════════════════════════════════════════
-  //  HORIZONTAL PANEL SLIDER (profile view)
-  // ══════════════════════════════════════════════
-  (function initHSlider() {
+  // Panel slider removed — single panel layout
+  (function initHSlider() { return; // disabled
+  (function initHSlider_disabled() {
     const hOuter  = document.getElementById("h-outer");
     const hTrack  = document.getElementById("h-track");
     const dots    = document.querySelectorAll(".h-dot");
