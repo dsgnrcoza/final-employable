@@ -1,0 +1,28 @@
+# Secrets — never commit your real .env
+.env
+
+# Local SQLite database (on Vercel use DATABASE_URL / PostgreSQL instead)
+instance/
+
+# Uploaded user documents (ephemeral locally; processed in /tmp on Vercel)
+uploads/*
+!uploads/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Vercel
+.vercel/
+
+# Cache
+cache/
+drift_log.jsonl
