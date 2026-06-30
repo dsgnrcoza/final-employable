@@ -95,9 +95,10 @@ function getInitials(name) {
 
 function setAvatarEl(el, profile) {
   if (!el) return;
-  if (profile.avatar_url) {
+    if (profile.avatar_url) {
     const url = profile.avatar_url + "?t=" + Date.now();
-    el.innerHTML = `<img src="${escapeHtml(url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    const initials = getInitials(profile.full_name || "JS");
+    el.innerHTML = `<img src="${escapeHtml(url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initials}'">`;
   } else {
     el.textContent = getInitials(profile.full_name || "JS");
   }
