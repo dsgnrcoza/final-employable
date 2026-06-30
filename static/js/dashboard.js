@@ -2641,4 +2641,72 @@ document.addEventListener("DOMContentLoaded", () => {
       if (el) el.addEventListener("click", () => openP2Card(id));
     });
   })();
+
+  // ── Mobile: CV Rebuilder bottom sheet ──
+  (function initCVRBottomSheet() {
+    if (window.innerWidth > 1100) return;
+    const panel   = document.getElementById("cvr-ai-panel");
+    const handle  = document.getElementById("cvr-ai-sheet-handle");
+    if (!panel || !handle) return;
+
+    const COLLAPSED = 80;
+    const getHalf = () => Math.round(window.innerHeight * 0.52);
+    const getFull = () => Math.round(window.innerHeight * 0.85);
+
+    let isDragging = false, startY = 0, startH = 0;
+
+    handle.addEventListener("touchstart", (e) => {
+      isDragging = true;
+      startY = e.touches[0].clientY;
+      startH = panel.getBoundingClientRect().height;
+      panel.style.transition = "none";
+      e.preventDefault();
+    }, { passive: false });
+
+    handle.addEventListener("touchmove", (e) => {
+      if (!isDragging) return;
+      const dy = startY - e.touches[0].clientY;
+      const newH = Math.max(COLLAPSED, Math.min(getFull(), startH + dy));
+      panel.style.height = newH + "px";
+      e.preventDefault();
+    }, { passive: false });
+
+    handle.addEventListener("touchend", () => {
+      isDragging = false;
+      const h = panel.getBoundingClientRect().height;
+      panel.style.transition = "height 0.3s cubic-bezier(0.16,1,0.3,1)";
+      const half = getHalf(), full = getFull();
+      if (h < (COLLAPSED + half) / 2)      panel.style.height = COLLAPSED + "px";
+      else if (h < (half + full) / 2)      panel.style.height = half + "px";
+      else                                  panel.style.height = full + "px";
+    });
+
+    // Tap collapsed handle → expand to half
+    handle.addEventListener("click", () => {
+      const h = panel.getBoundingClientRect().height;
+      if (h <= COLLAPSED + 10) {
+        panel.style.transition = "height 0.3s cubic-bezier(0.16,1,0.3,1)";
+        panel.style.height = getHalf() + "px";
+      }
+    });
+  })();
+
+  // ── Mobile: AI history drawer toggle ──
+  (function initMobileAIHistory() {
+    if (window.innerWidth > 1100) return;
+    const sidebar  = document.getElementById("ai-history-sidebar");
+    const overlay  = document.getElementById("ai-history-overlay");
+    const openBtn  = document.getElementById("ai-mobile-history-btn");
+    const newBtn   = document.getElementById("ai-mobile-new-chat-btn");
+
+    function openDrawer()  { sidebar && sidebar.classList.add("mobile-open");    overlay && overlay.classList.add("visible"); }
+    function closeDrawer() { sidebar && sidebar.classList.remove("mobile-open"); overlay && overlay.classList.remove("visible"); }
+
+    if (openBtn)  openBtn.addEventListener("click", () => sidebar.classList.contains("mobile-open") ? closeDrawer() : openDrawer());
+    if (overlay)  overlay.addEventListener("click", closeDrawer);
+    // Close drawer when a history item is tapped
+    if (sidebar)  sidebar.addEventListener("click", (e) => { if (e.target.closest(".ai-history-item")) closeDrawer(); });
+    if (newBtn && typeof startNewConversation === "function") newBtn.addEventListener("click", () => { startNewConversation(); closeDrawer(); });
+  })();
+
 });
