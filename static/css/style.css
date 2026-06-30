@@ -691,44 +691,13 @@ textarea:focus-visible, select:focus-visible {
 
 /* ── Profile layout ── */
 /* ── Vertical panel slider ── */
-.h-outer {
+.main-content-wrap {
   flex: 1; min-height: 0;
-  /* overflow-y:clip hides the panel below; overflow-x:visible lets horizontal shadows breathe */
-  overflow-x: visible; overflow-y: clip;
-  position: relative;
-  touch-action: pan-x; /* allows vertical swipe to be captured by JS */
-}
-.h-track {
   display: flex; flex-direction: column;
-  transition: transform 0.55s cubic-bezier(0.77, 0, 0.175, 1);
-  will-change: transform;
-}
-.h-panel {
-  width: 100%; flex-shrink: 0;
-  display: flex; flex-direction: column;
-  /* Extra side padding so card glows have breathing room; no overflow clip so shadows render fully */
+  overflow-y: auto; overflow-x: visible;
   padding: 0 10px 16px;
   box-sizing: border-box;
-  overflow: visible;
 }
-/* forward hint on panel 1 */
-.h-panel-hint {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 12px; color: var(--text-faint); cursor: default;
-  user-select: none; opacity: 1; transition: opacity .3s;
-}
-.h-panel-hint-back { justify-content: flex-start; }
-/* nav dots */
-.h-nav-dots {
-  display: flex; justify-content: center; gap: 8px;
-  padding: 8px 0 2px; flex-shrink: 0;
-}
-.h-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--border); border: none; cursor: pointer;
-  padding: 0; transition: background .2s, transform .2s;
-}
-.h-dot-active { background: var(--accent-bright); transform: scale(1.25); }
 
 /* ── Panel 2: 2×2 grid ── */
 .p2-grid {
