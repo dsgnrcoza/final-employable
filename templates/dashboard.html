@@ -52,18 +52,9 @@
     <!-- ── PROFILE VIEW ── -->
     <div class="view-panel" id="view-profile" data-view-panel="profile" style="flex-direction:column;">
 
-      <!-- Horizontal slide track -->
-      <div class="h-outer" id="h-outer">
-        <div class="h-track" id="h-track">
-
-          <!-- ═══ PANEL 1: Dashboard ═══ -->
-          <div class="h-panel">
+      <div class="main-content-wrap">
             <div class="topbar">
               <div><h1 id="topbar-greeting">Welcome back</h1></div>
-              <div class="h-panel-hint" id="h-hint-fwd">
-                <span>Scroll down for insights</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
-              </div>
             </div>
             <div class="profile-layout">
 
@@ -175,98 +166,9 @@
         </div><!-- /right-panel -->
 
           </div><!-- /profile-layout -->
-          </div><!-- /h-panel 1 -->
-
-          <!-- ═══ PANEL 2: Insights & AI ═══ -->
-          <div class="h-panel" id="h-panel-2">
-            <div class="topbar" style="flex-shrink:0;">
-              <div class="h-panel-hint h-panel-hint-back" id="h-hint-back">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="18 15 12 9 6 15"/></svg>
-                <span>Scroll up to return</span>
-              </div>
-              <div></div>
-            </div>
-
-            <!-- 2×2 grid -->
-            <div class="p2-grid">
-
-              <!-- TOP LEFT: Line graph of dimension scores -->
-              <div class="card p2-card" id="p2-card-tl">
-                <div class="eyebrow">Dimension Scores</div>
-                <div class="p2-chart-wrap">
-                  <svg id="p2-line-svg" width="100%" height="100%" preserveAspectRatio="none"></svg>
-                </div>
-              </div>
-
-              <!-- TOP RIGHT: Score overview + key insights -->
-              <div class="card p2-card" id="p2-card-tr">
-                <div class="eyebrow">Your Profile At a Glance</div>
-                <div class="p2-score-row" style="margin-bottom:14px;">
-                  <div class="p2-stat">
-                    <div class="p2-stat-val" id="p2-overall">—</div>
-                    <div class="p2-stat-label">Score</div>
-                  </div>
-                  <div class="p2-stat">
-                    <div class="p2-stat-val p2-stat-green" id="p2-best-val">—</div>
-                    <div class="p2-stat-label" id="p2-best-label">Strongest</div>
-                  </div>
-                  <div class="p2-stat">
-                    <div class="p2-stat-val p2-stat-amber" id="p2-weak-val">—</div>
-                    <div class="p2-stat-label" id="p2-weak-label">Needs Work</div>
-                  </div>
-                </div>
-                <div class="eyebrow" style="margin-bottom:6px;">What's Working</div>
-                <div id="p2-working-well" class="p2-insight-list"></div>
-              </div>
-
-              <!-- BOTTOM LEFT: Strongest dimensions + top skills -->
-              <div class="card p2-card" id="p2-card-bl">
-                <div class="eyebrow">Your Strengths</div>
-                <div id="p2-strengths"></div>
-              </div>
-
-              <!-- BOTTOM RIGHT: Roadmap progress + AI launcher -->
-              <div class="card p2-card" id="p2-card-br">
-                <div class="eyebrow">Progress &amp; Next Steps</div>
-                <div id="p2-progress"></div>
-                <div class="p2-ai-card" style="margin-top:auto;">
-                  <div class="p2-ai-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  </div>
-                  <div class="p2-ai-text">
-                    <div class="p2-ai-title">Employable AI</div>
-                    <div class="p2-ai-sub">Ask anything about your scores or career path</div>
-                  </div>
-                  <button class="p2-ai-btn" onclick="document.querySelector('[data-view=messages]').click()">Open →</button>
-                </div>
-              </div>
-
-            </div><!-- /p2-grid -->
-          </div><!-- /h-panel 2 -->
-
-        </div><!-- /h-track -->
-      </div><!-- /h-outer -->
-
-      <!-- Panel nav dots -->
-      <div class="h-nav-dots">
-        <button class="h-dot h-dot-active" data-panel="0" title="Dashboard"></button>
-        <button class="h-dot" data-panel="1" title="Score Breakdown"></button>
-      </div>
+      </div><!-- /main-content-wrap -->
 
     </div><!-- /view-profile -->
-
-    <!-- ── Panel 2 card expand overlay ── -->
-    <div class="p2-expand-overlay" id="p2-expand-overlay">
-      <div class="p2-expand-card" id="p2-expand-card">
-        <button class="p2-expand-close" id="p2-expand-close" aria-label="Close">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <div class="p2-expand-inner">
-          <div class="p2-expand-header" id="p2-expand-header"></div>
-          <div class="p2-expand-body" id="p2-expand-body"></div>
-        </div>
-      </div>
-    </div>
 
     <!-- ── CV REBUILDER VIEW ── -->
     <div class="view-panel cvr-shell" id="view-insights" data-view-panel="insights" style="display:none; flex-direction:column; gap:0;">
