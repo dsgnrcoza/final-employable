@@ -308,7 +308,9 @@
 
         <!-- AI panel -->
         <div class="cvr-ai-panel" id="cvr-ai-panel">
-          <!-- Resize handle -->
+          <!-- Mobile: drag handle for bottom sheet -->
+          <div class="cvr-ai-sheet-handle" id="cvr-ai-sheet-handle"></div>
+          <!-- Resize handle (desktop) -->
           <div class="cvr-resize-handle" id="cvr-resize-handle" title="Drag to resize"></div>
           <div class="cvr-ai-header">
             <div class="cvr-ai-logo">
@@ -370,12 +372,19 @@
       <div class="ai-main-area" id="ai-main-area">
 
         <!-- Persistent header -->
-        <div class="topbar" style="flex-shrink:0; padding-top:16px;">
-          <div style="display:flex; align-items:center; gap:8px;">
+        <div class="topbar ai-mobile-topbar" style="flex-shrink:0; padding-top:16px;">
+          <div style="display:flex; align-items:center; gap:10px; width:100%;">
+            <button class="ai-mobile-history-btn" id="ai-mobile-history-btn" title="Chat history" style="display:none;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+            </button>
             <div class="cvr-ai-logo">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
             <span class="cvr-ai-title" style="font-size:16px;">Employable AI</span>
+            <div style="flex:1;"></div>
+            <button class="ai-mobile-new-chat-btn" id="ai-mobile-new-chat-btn" title="New chat" style="display:none;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
           </div>
         </div>
 
@@ -439,21 +448,27 @@
         <div style="margin-top:20px;">
           <a href="{{ url_for('privacy_policy') }}" class="btn btn-ghost btn-sm" target="_blank">View Privacy Policy</a>
         </div>
+        <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+          <a href="{{ url_for('logout_page') }}" class="btn btn-ghost btn-sm" style="color:#c44;">Sign Out</a>
+        </div>
       </div>
     </div>
 
   </main>
+
+  <!-- Mobile AI history overlay -->
+  <div class="ai-history-overlay" id="ai-history-overlay"></div>
 
   <!-- ══════════ MOBILE TAB BAR ══════════ -->
   <nav class="mobile-tabbar">
     <div class="tab-item active" data-view="profile">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
     </div>
-    <div class="tab-item" data-view="insights">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    </div>
     <div class="tab-item" data-view="messages">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="tab-item" data-view="insights">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     </div>
     <div class="tab-item" data-view="applications">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
