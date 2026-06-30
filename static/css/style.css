@@ -2608,10 +2608,15 @@ textarea:focus-visible, select:focus-visible {
   .p2-card { cursor: pointer; }
   .p2-card:active { transform: scale(0.97); }
 
-  /* ── Roadmap: number + title on one line, badge below ── */
+  /* ── Roadmap: number + title across full width, badge + gain on own rows below ── */
   .inline-roadmap-item-head { flex-wrap: wrap; align-items: flex-start; gap: 4px 0; }
-  .inline-roadmap-title { flex: 1; min-width: 0; }
-  .inline-roadmap-item-head > span:nth-child(n+3) { margin-left: 28px; }
+  .inline-roadmap-title { flex: 1; min-width: 0; word-break: normal; }
+  /* Force badge and gain pill to break to their own rows, indented past the number */
+  .inline-roadmap-item-head > span:nth-child(n+3) {
+    flex-basis: 100%;
+    margin-left: 28px;
+    margin-top: 2px;
+  }
 
   /* ── AI Chat view: horizontal breathing room ── */
   .ai-main-area { padding: 0 4px; }
