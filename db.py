@@ -1,39 +1,3 @@
-"""
-db.py
------
-All data storage for Employable, using Python's built-in sqlite3 — no
-extra database server, no ORM dependency. One file on disk
-(instance/employable.sqlite3) holds everything.
-
-WHY SQLITE AND NOT JUST JSON FILES:
-The original desktop app used flat JSON files in cache/ because it was
-single-user — there was only ever one person's data, so "which file
-belongs to which user" wasn't a question that needed answering. Now
-that multiple people can have accounts, every row below is tied to a
-user_id, and SQLite's foreign keys make "show me ONLY this user's
-documents/skills" a one-line WHERE clause instead of something we'd
-have to carefully reimplement by hand with folders-per-user.
-
-TABLES:
-- users              one row per account (username, hashed password,
-                      security question + hashed answer for recovery)
-- documents           one row per uploaded file, tied to a user_id
-- analyses            one row per CV analysis result (the JSON blob
-                      that used to live in cache.py's cache/ folder),
-                      tied to a user_id
-- skills              one row per skill tag on a user's profile, so
-                      skills can be added/removed individually and the
-                      "first 8 visible, rest scrollable" behavior is a
-                      pure frontend concern, not a backend cap
-
-SECURITY NOTE ON PASSWORDS:
-Passwords are never stored in plain text. werkzeug.security (which
-ships with Flask, no extra install needed) hashes them with a salted,
-slow hash (scrypt) before they ever touch the database. The security
-question's ANSWER is hashed the same way — only the question text
-itself is stored in plain text, since the question is meant to be seen.
-"""
-
 import sqlite3
 import os
 import json
@@ -41,17 +5,11 @@ from datetime import datetime, timezone
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "instance", "employable.sqlite3")
 
-# ── PostgreSQL support (used on Vercel via DATABASE_URL env var) ──────────────
-# When DATABASE_URL is set, all connections go to PostgreSQL instead of SQLite.
-# The _PGConn shim exposes the same interface as sqlite3.Connection so the
-# rest of db.py needs zero changes.
-
 _DATABASE_URL = os.environ.get("DATABASE_URL", "")
 _USE_PG = _DATABASE_URL.startswith(("postgres://", "postgresql://"))
 
 
 class _PGCursor:
-    """Wraps psycopg2 cursor to look like sqlite3 Cursor."""
     def __init__(self, cur, lastrowid=None):
         self._cur = cur
         self.lastrowid = lastrowid
@@ -70,18 +28,16 @@ class _PGCursor:
 
 
 class _PGConn:
-    """Wraps psycopg2 connection to look like sqlite3 Connection."""
     def __init__(self):
         import psycopg2
         import psycopg2.extras
         url = _DATABASE_URL
-        # Neon and some providers use postgres:// — psycopg2 needs postgresql://
         if url.startswith("postgres://"):
             url = "postgresql://" + url[len("postgres://"):]
         self._conn = psycopg2.connect(url, cursor_factory=psycopg2.extras.RealDictCursor)
         self._conn.autocommit = False
 
-        def execute(self, sql, params=()):
+    def execute(self, sql, params=()):
         sql = sql.replace("?", "%s")
         sql = sql.replace(" COLLATE NOCASE", "")
         cur = self._conn.cursor()
@@ -95,7 +51,6 @@ class _PGConn:
         return _PGCursor(cur, last_id)
 
     def executescript(self, script):
-        """Split on ; and run each non-empty statement."""
         cur = self._conn.cursor()
         for stmt in script.split(";"):
             stmt = stmt.strip()
@@ -113,29 +68,17 @@ class _PGConn:
 
 
 def get_db():
-    """
-    Opens a new connection for the current request. Returns either a
-    native sqlite3 connection (local dev) or a _PGConn shim (Vercel /
-    any environment where DATABASE_URL is set).
-    """
     if _USE_PG:
         return _PGConn()
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row  # lets us access columns by name: row["username"]
+    conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
 
 def init_db():
-    """
-    Creates all tables if they don't already exist. Supports both SQLite
-    (local dev) and PostgreSQL (Vercel / DATABASE_URL). Safe to call on
-    every request — all statements are idempotent.
-    """
-    # PK syntax differs: SQLite uses AUTOINCREMENT, PostgreSQL uses SERIAL/BIGSERIAL
     _PK = "BIGSERIAL PRIMARY KEY" if _USE_PG else "INTEGER PRIMARY KEY AUTOINCREMENT"
-
     conn = get_db()
     conn.executescript(f"""
         CREATE TABLE IF NOT EXISTS users (
@@ -240,10 +183,6 @@ def init_db():
     """)
     conn.commit()
 
-    # Lightweight migrations for older SQLite databases already on disk.
-    # On PostgreSQL the schema above is created fresh with all columns so
-    # these are skipped. On SQLite we swallow OperationalError for columns
-    # that already exist.
     if not _USE_PG:
         _sqlite_migrations = [
             "ALTER TABLE users ADD COLUMN documents_confirmed INTEGER NOT NULL DEFAULT 0",
@@ -270,8 +209,6 @@ def init_db():
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
-
-# ---------------- USER QUERIES ----------------
 
 def create_user(username, password_hash, security_question, security_answer_hash):
     conn = get_db()
@@ -316,10 +253,6 @@ def update_password(user_id, new_password_hash):
 
 
 def update_profile_fields(user_id, **fields):
-    """
-    fields can include full_name, headline, email, location, avatar_path.
-    Only columns actually passed get updated.
-    """
     if not fields:
         return
     allowed = {"full_name", "headline", "email", "location", "avatar_path", "phone"}
@@ -337,12 +270,6 @@ def update_profile_fields(user_id, **fields):
 
 
 def set_documents_confirmed(user_id, confirmed_owner_name):
-    """
-    Marks onboarding as complete: the user has uploaded at least one
-    document, any identity conflict has been resolved, and we now
-    know whose documents this account holds. Called once, at the end
-    of the onboarding flow.
-    """
     conn = get_db()
     try:
         conn.execute(
@@ -355,11 +282,6 @@ def set_documents_confirmed(user_id, confirmed_owner_name):
 
 
 def reset_documents_confirmed(user_id):
-    """
-    Used if every document is later removed — without at least one
-    document on file there's nothing to have confirmed an identity
-    against, so onboarding should run again on next login.
-    """
     conn = get_db()
     try:
         conn.execute(
@@ -370,8 +292,6 @@ def reset_documents_confirmed(user_id):
     finally:
         conn.close()
 
-
-# ---------------- DOCUMENT QUERIES (per-user) ----------------
 
 def add_document(user_id, filename, stored_path, file_type, content=""):
     conn = get_db()
@@ -388,7 +308,6 @@ def add_document(user_id, filename, stored_path, file_type, content=""):
 
 
 def get_document_contents(user_id):
-    """Returns list of {id, filename, content} for building analysis prompts without touching disk."""
     conn = get_db()
     try:
         rows = conn.execute(
@@ -467,8 +386,6 @@ def delete_document(user_id, document_id):
         conn.close()
 
 
-# ---------------- SKILL QUERIES (per-user) ----------------
-
 def get_skills_for_user(user_id):
     conn = get_db()
     try:
@@ -484,7 +401,7 @@ def add_skill(user_id, label, source="manual"):
     conn = get_db()
     try:
         existing = conn.execute(
-            "SELECT id FROM skills WHERE user_id = ? AND label = ? COLLATE NOCASE", (user_id, label)
+            "SELECT id FROM skills WHERE user_id = ? AND label = ?", (user_id, label)
         ).fetchone()
         if existing:
             return existing["id"]
@@ -502,14 +419,6 @@ def add_skill(user_id, label, source="manual"):
 
 
 def replace_ai_skills(user_id, labels):
-    """
-    Called after a new CV analysis: removes previously AI-sourced
-    skills (source='ai') and re-inserts the fresh list from the latest
-    analysis, WITHOUT touching any skill the user added manually
-    (source='manual'). This keeps "skills the AI found in your
-    documents" in sync with your latest upload while never silently
-    deleting something you typed in yourself.
-    """
     conn = get_db()
     try:
         conn.execute("DELETE FROM skills WHERE user_id = ? AND source = 'ai'", (user_id,))
@@ -519,7 +428,7 @@ def replace_ai_skills(user_id, labels):
         order = max_order + 1
         for label in labels:
             existing = conn.execute(
-                "SELECT id FROM skills WHERE user_id = ? AND label = ? COLLATE NOCASE", (user_id, label)
+                "SELECT id FROM skills WHERE user_id = ? AND label = ?", (user_id, label)
             ).fetchone()
             if existing:
                 continue
@@ -541,8 +450,6 @@ def delete_skill(user_id, skill_id):
     finally:
         conn.close()
 
-
-# ---------------- ANALYSIS QUERIES (per-user) ----------------
 
 def save_analysis(user_id, result_json):
     conn = get_db()
@@ -577,8 +484,6 @@ def get_latest_analysis(user_id):
         conn.close()
 
 
-# ---------------- JOB APPLICATION QUERIES (per-user) ----------------
-
 def get_applications_for_user(user_id):
     conn = get_db()
     try:
@@ -604,8 +509,6 @@ def add_application(user_id, job_title, company):
         conn.close()
 
 
-# ---------------- SCORE HISTORY QUERIES (per-user) ----------------
-
 def save_score_history(user_id, overall_rating, dimension_scores: dict):
     conn = get_db()
     try:
@@ -616,6 +519,7 @@ def save_score_history(user_id, overall_rating, dimension_scores: dict):
         conn.commit()
     finally:
         conn.close()
+
 
 def get_score_history(user_id, limit=20):
     conn = get_db()
@@ -628,6 +532,7 @@ def get_score_history(user_id, limit=20):
     finally:
         conn.close()
 
+
 def set_disclaimer_accepted(user_id):
     conn = get_db()
     try:
@@ -635,6 +540,7 @@ def set_disclaimer_accepted(user_id):
         conn.commit()
     finally:
         conn.close()
+
 
 def set_target_field(user_id, target_field: str):
     conn = get_db()
@@ -644,8 +550,6 @@ def set_target_field(user_id, target_field: str):
     finally:
         conn.close()
 
-
-# ---------------- CHAT ATTACHMENT QUERIES ----------------
 
 def add_chat_attachment(user_id, filename, stored_path, mime_type, text_content=""):
     conn = get_db()
@@ -683,8 +587,6 @@ def get_chat_attachments_for_user(user_id):
     finally:
         conn.close()
 
-
-# ---------------- CHAT CONVERSATION QUERIES ----------------
 
 def get_conversations_for_user(user_id):
     conn = get_db()
