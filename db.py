@@ -81,19 +81,17 @@ class _PGConn:
         self._conn = psycopg2.connect(url, cursor_factory=psycopg2.extras.RealDictCursor)
         self._conn.autocommit = False
 
-    def execute(self, sql, params=()):
+        def execute(self, sql, params=()):
         sql = sql.replace("?", "%s")
+        sql = sql.replace(" COLLATE NOCASE", "")
         cur = self._conn.cursor()
-        cur.execute(sql, params)
         last_id = None
         if sql.strip().upper().startswith("INSERT"):
-            try:
-                id_cur = self._conn.cursor()
-                id_cur.execute("SELECT lastval()")
-                row = id_cur.fetchone()
-                last_id = row[0] if row else None
-            except Exception:
-                pass
+            cur.execute(sql + " RETURNING id", params)
+            row = cur.fetchone()
+            last_id = row["id"] if row else None
+        else:
+            cur.execute(sql, params)
         return _PGCursor(cur, last_id)
 
     def executescript(self, script):
