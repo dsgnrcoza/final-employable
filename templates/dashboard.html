@@ -1,0 +1,684 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Employable{% endblock %}
+{% block content %}
+<div class="app-shell">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand" id="sidebar-brand-toggle" title="Expand menu">
+      <span class="brand-logo brand-logo-short">E<span class="dot">.</span></span>
+      <span class="brand-logo brand-logo-full">Employable<span class="dot">.</span></span>
+      <span class="brand-hamburger">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </span>
+    </div>
+
+    <div class="nav-item active" data-view="profile" data-label="Dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </div>
+    <div class="nav-item" data-view="messages" data-label="Employable AI">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span class="nav-label">Employable AI</span>
+    </div>
+    <div class="nav-item" data-view="insights" data-label="CV Workshop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="nav-label">CV Workshop</span>
+    </div>
+    <div class="nav-item" data-view="applications" data-label="Applications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+      <span class="nav-label">Applications</span>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="nav-item" data-view="support" data-label="Support">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+        <span class="nav-label">Support</span>
+      </div>
+      <a href="{{ url_for('privacy_policy') }}" class="nav-item" data-label="Privacy Policy" style="text-decoration:none;" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="nav-label">Privacy Policy</span>
+      </a>
+      <div class="nav-item" data-label="Sign Out" onclick="window.location.href='{{ url_for('logout_page') }}'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        <span class="nav-label">Sign Out</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <main class="main">
+
+    <!-- ── PROFILE VIEW ── -->
+    <div class="view-panel" id="view-profile" data-view-panel="profile" style="flex-direction:column;">
+
+      <!-- Horizontal slide track -->
+      <div class="h-outer" id="h-outer">
+        <div class="h-track" id="h-track">
+
+          <!-- ═══ PANEL 1: Dashboard ═══ -->
+          <div class="h-panel">
+            <div class="topbar">
+              <div><h1 id="topbar-greeting">Welcome back</h1></div>
+              <div class="h-panel-hint" id="h-hint-fwd">
+                <span>Scroll down for insights</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="profile-layout">
+
+        <!-- ── LEFT: PROFILE CARD ── -->
+        <div class="card profile-card" id="profile-card">
+
+          <div class="profile-header">
+            <div class="profile-avatar" id="profile-avatar">??</div>
+            <div class="profile-info">
+              <div class="profile-name" id="profile-name">{{ state.profile.full_name or "Job Seeker" }}</div>
+              <div class="profile-action-btns" style="margin-top:8px;">
+                <button class="btn-edit-profile" id="edit-profile-btn">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit Profile
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-meta-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            <span id="profile-email">{{ state.profile.email or "No email on file" }}</span>
+          </div>
+          <div class="profile-meta-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+            <span id="profile-location">{{ state.profile.location or "Location not set" }}</span>
+          </div>
+          <div class="profile-meta-row" id="profile-phone-row" style="{{ 'display:none' if not state.profile.phone else '' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.72 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.58 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.7a16 16 0 0 0 6 6l.93-.93a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.5 16z"/></svg>
+            <span id="profile-phone">{{ state.profile.phone or "" }}</span>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div class="skills-section-label">Skills</div>
+          <input type="hidden" id="target-field-input" value="{{ state.profile.target_field or '' }}">
+          <input type="hidden" id="new-skill-input">
+          <div class="skills-scroll" id="skills-scroll">
+            <div class="skills-scroll-inner" id="skills-scroll-inner"></div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div class="upload-zone" id="upload-zone">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="margin-right:7px;vertical-align:middle;opacity:0.6;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <strong>Upload documents</strong> — any file type accepted
+          </div>
+          <input type="file" id="file-input" multiple style="display:none;">
+          <div class="doc-list" id="doc-list"></div>
+
+        </div><!-- /profile-card -->
+
+        <!-- ── RIGHT PANEL ── -->
+        <div class="right-panel">
+
+          <div class="top-row">
+
+            <!-- Dimensions card -->
+            <div class="card" id="dimensions-card">
+              <div class="eyebrow">Cubic-Metric Dimensions</div>
+              <div id="dimensions-list">
+                <div class="empty-state">
+                  <span class="big">No analysis yet</span>
+                  Upload a document to generate your breakdown.
+                </div>
+              </div>
+            </div>
+
+            <!-- Gauge + Applications -->
+            <div class="col-stack">
+              <div class="card gauge-card">
+                <div class="eyebrow">Employability Rating</div>
+                <div class="gauge-wrap" id="gauge-wrap">
+                  <svg width="200" height="200" viewBox="0 0 180 180">
+                    <circle cx="90" cy="90" r="78" fill="none" stroke="#E8E8E8" stroke-width="10"/>
+                    <circle id="gauge-arc" cx="90" cy="90" r="78" fill="none" stroke="#ff00c8" stroke-width="10"
+                            stroke-linecap="round" stroke-dasharray="0 490"
+                            transform="rotate(-90 90 90)"/>
+                    <text x="90" y="90" text-anchor="middle" dominant-baseline="middle" class="gauge-number" id="gauge-number">—</text>
+                    <text x="90" y="115" text-anchor="middle" dominant-baseline="middle" class="gauge-denom">/ 10</text>
+                  </svg>
+                </div>
+                <div style="flex:1;"></div>
+                <div class="potential-pill" id="potential-pill">UPLOAD DOCUMENTS TO BEGIN</div>
+              </div>
+
+              <div id="applications-area" style="display:none;"></div>
+            </div>
+
+          </div><!-- /top-row -->
+
+          <!-- ── INLINE ROADMAP ── -->
+          <div class="card inline-roadmap-card" id="inline-roadmap-card">
+            <div class="eyebrow">Improvement Roadmap</div>
+            <div class="inline-roadmap-list" id="inline-roadmap-list">
+              <div class="roadmap-empty">Upload and score your documents to generate your personal improvement roadmap.</div>
+            </div>
+          </div>
+
+          <div id="lists-grid" style="display:none;"></div>
+          <!-- keep hidden IDs so JS doesn't crash -->
+          <div style="display:none;" id="insights-section">
+            <ul id="evidence-summary-list"></ul>
+            <ul id="working-well-list"></ul>
+            <ul id="critical-issues-list"></ul>
+            <ul id="missing-evidence-list"></ul>
+          </div>
+
+        </div><!-- /right-panel -->
+
+          </div><!-- /profile-layout -->
+          </div><!-- /h-panel 1 -->
+
+          <!-- ═══ PANEL 2: Insights & AI ═══ -->
+          <div class="h-panel" id="h-panel-2">
+            <div class="topbar" style="flex-shrink:0;">
+              <div class="h-panel-hint h-panel-hint-back" id="h-hint-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="18 15 12 9 6 15"/></svg>
+                <span>Scroll up to return</span>
+              </div>
+              <div></div>
+            </div>
+
+            <!-- 2×2 grid -->
+            <div class="p2-grid">
+
+              <!-- TOP LEFT: Line graph of dimension scores -->
+              <div class="card p2-card" id="p2-card-tl">
+                <div class="eyebrow">Dimension Scores</div>
+                <div class="p2-chart-wrap">
+                  <svg id="p2-line-svg" width="100%" height="100%" preserveAspectRatio="none"></svg>
+                </div>
+              </div>
+
+              <!-- TOP RIGHT: Score overview + key insights -->
+              <div class="card p2-card" id="p2-card-tr">
+                <div class="eyebrow">Your Profile At a Glance</div>
+                <div class="p2-score-row" style="margin-bottom:14px;">
+                  <div class="p2-stat">
+                    <div class="p2-stat-val" id="p2-overall">—</div>
+                    <div class="p2-stat-label">Score</div>
+                  </div>
+                  <div class="p2-stat">
+                    <div class="p2-stat-val p2-stat-green" id="p2-best-val">—</div>
+                    <div class="p2-stat-label" id="p2-best-label">Strongest</div>
+                  </div>
+                  <div class="p2-stat">
+                    <div class="p2-stat-val p2-stat-amber" id="p2-weak-val">—</div>
+                    <div class="p2-stat-label" id="p2-weak-label">Needs Work</div>
+                  </div>
+                </div>
+                <div class="eyebrow" style="margin-bottom:6px;">What's Working</div>
+                <div id="p2-working-well" class="p2-insight-list"></div>
+              </div>
+
+              <!-- BOTTOM LEFT: Strongest dimensions + top skills -->
+              <div class="card p2-card" id="p2-card-bl">
+                <div class="eyebrow">Your Strengths</div>
+                <div id="p2-strengths"></div>
+              </div>
+
+              <!-- BOTTOM RIGHT: Roadmap progress + AI launcher -->
+              <div class="card p2-card" id="p2-card-br">
+                <div class="eyebrow">Progress &amp; Next Steps</div>
+                <div id="p2-progress"></div>
+                <div class="p2-ai-card" style="margin-top:auto;">
+                  <div class="p2-ai-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <div class="p2-ai-text">
+                    <div class="p2-ai-title">Employable AI</div>
+                    <div class="p2-ai-sub">Ask anything about your scores or career path</div>
+                  </div>
+                  <button class="p2-ai-btn" onclick="document.querySelector('[data-view=messages]').click()">Open →</button>
+                </div>
+              </div>
+
+            </div><!-- /p2-grid -->
+          </div><!-- /h-panel 2 -->
+
+        </div><!-- /h-track -->
+      </div><!-- /h-outer -->
+
+      <!-- Panel nav dots -->
+      <div class="h-nav-dots">
+        <button class="h-dot h-dot-active" data-panel="0" title="Dashboard"></button>
+        <button class="h-dot" data-panel="1" title="Score Breakdown"></button>
+      </div>
+
+    </div><!-- /view-profile -->
+
+    <!-- ── Panel 2 card expand overlay ── -->
+    <div class="p2-expand-overlay" id="p2-expand-overlay">
+      <div class="p2-expand-card" id="p2-expand-card">
+        <button class="p2-expand-close" id="p2-expand-close" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="p2-expand-inner">
+          <div class="p2-expand-header" id="p2-expand-header"></div>
+          <div class="p2-expand-body" id="p2-expand-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CV REBUILDER VIEW ── -->
+    <div class="view-panel cvr-shell" id="view-insights" data-view-panel="insights" style="display:none; flex-direction:column; gap:0;">
+
+      <!-- Toolbar -->
+      <div class="cvr-toolbar">
+        <!-- Font family -->
+        <div class="cvr-toolbar-group">
+          <select class="cvr-font-family" id="cvr-font-family" title="Font">
+            <option value="Arial, sans-serif" selected>Arial</option>
+            <option value="Calibri, sans-serif">Calibri</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Courier New', monospace">Courier New</option>
+            <option value="Verdana, sans-serif">Verdana</option>
+            <option value="Tahoma, sans-serif">Tahoma</option>
+          </select>
+        </div>
+        <div class="cvr-toolbar-sep"></div>
+        <!-- Font size -->
+        <div class="cvr-toolbar-group">
+          <select class="cvr-font-size" id="cvr-font-size" title="Font size">
+            <option value="1">8pt</option>
+            <option value="2">10pt</option>
+            <option value="3" selected>12pt</option>
+            <option value="4">14pt</option>
+            <option value="5">18pt</option>
+            <option value="6">24pt</option>
+            <option value="7">36pt</option>
+          </select>
+        </div>
+        <div class="cvr-toolbar-sep"></div>
+        <!-- Undo / Redo -->
+        <div class="cvr-toolbar-group">
+          <button class="cvr-tool-btn" data-cmd="undo" title="Undo (Ctrl+Z)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+          </button>
+          <button class="cvr-tool-btn" data-cmd="redo" title="Redo (Ctrl+Y)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.5"/></svg>
+          </button>
+        </div>
+        <div class="cvr-toolbar-sep"></div>
+        <!-- Style -->
+        <div class="cvr-toolbar-group">
+          <button class="cvr-tool-btn" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+          <button class="cvr-tool-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+          <button class="cvr-tool-btn" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+          <button class="cvr-tool-btn" data-cmd="strikeThrough" title="Strikethrough" style="text-decoration:line-through; font-size:12px;">S</button>
+        </div>
+        <div class="cvr-toolbar-sep"></div>
+        <!-- Align -->
+        <div class="cvr-toolbar-group">
+          <button class="cvr-tool-btn" data-cmd="justifyLeft" title="Align left">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+          </button>
+          <button class="cvr-tool-btn" data-cmd="justifyCenter" title="Center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+          </button>
+          <button class="cvr-tool-btn" data-cmd="justifyRight" title="Align right">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="cvr-toolbar-sep"></div>
+        <!-- Lists / indent -->
+        <div class="cvr-toolbar-group">
+          <button class="cvr-tool-btn" data-cmd="insertUnorderedList" title="Bullet list">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </button>
+          <button class="cvr-tool-btn" data-cmd="insertOrderedList" title="Numbered list">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><text x="1" y="8" font-size="7" fill="currentColor" stroke="none" font-family="Arial">1</text><text x="1" y="14" font-size="7" fill="currentColor" stroke="none" font-family="Arial">2</text><text x="1" y="20" font-size="7" fill="currentColor" stroke="none" font-family="Arial">3</text></svg>
+          </button>
+          <button class="cvr-tool-btn" data-cmd="outdent" title="Decrease indent">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 8 3 12 7 16"/><line x1="21" y1="12" x2="3" y2="12"/><line x1="21" y1="6" x2="11" y2="6"/><line x1="21" y1="18" x2="11" y2="18"/></svg>
+          </button>
+          <button class="cvr-tool-btn" data-cmd="indent" title="Increase indent">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 21 12 17 16"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="18" x2="13" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="cvr-toolbar-spacer"></div>
+        <!-- Import CV dropdown -->
+        <div class="cvr-import-wrap" id="cvr-import-wrap">
+          <button class="cvr-import-btn" id="cvr-import-btn" title="Import a CV">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Import CV
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:2px;"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="cvr-import-menu" id="cvr-import-menu" style="display:none;">
+            <button class="cvr-import-option" id="cvr-import-dashboard">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              From Dashboard
+            </button>
+            <button class="cvr-import-option" id="cvr-import-device">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              From Device
+            </button>
+          </div>
+        </div>
+        <input type="file" id="cvr-import-file" accept=".pdf,.doc,.docx,.txt" style="display:none;">
+        <!-- Download dropdown -->
+        <div class="cvr-download-wrap" id="cvr-download-wrap">
+          <button class="cvr-download-btn" id="cvr-download-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="cvr-download-menu" id="cvr-download-menu">
+            <button class="cvr-download-option" data-fmt="pdf">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Download as PDF
+            </button>
+            <button class="cvr-download-option" data-fmt="docx">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Download as DOCX
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor + AI panel -->
+      <div class="cvr-workspace">
+
+        <!-- Doc editor: single contenteditable, page boxes drawn behind as overlay -->
+        <div class="cvr-doc-area">
+          <div class="cvr-doc-wrap" id="cvr-doc-wrap">
+            <div class="cvr-editor-wrap" id="cvr-editor-wrap">
+              <div class="cvr-page-bgs" id="cvr-page-bgs" aria-hidden="true"></div>
+              <div id="cvr-editor" contenteditable="true" spellcheck="true"></div>
+              <div class="cvr-placeholder" id="cvr-placeholder">Your CV will appear here. Import your uploaded CV using the button above, or start typing.</div>
+            </div>
+          </div>
+          <div class="cvr-statusbar">
+            <span id="cvr-word-count">0 words</span>
+            <span id="cvr-char-count">0 characters</span>
+            <span class="cvr-statusbar-tip">Ctrl+Z undo &nbsp;·&nbsp; Ctrl+Y redo &nbsp;·&nbsp; Tab indent</span>
+          </div>
+        </div>
+
+        <!-- AI panel -->
+        <div class="cvr-ai-panel" id="cvr-ai-panel">
+          <!-- Resize handle -->
+          <div class="cvr-resize-handle" id="cvr-resize-handle" title="Drag to resize"></div>
+          <div class="cvr-ai-header">
+            <div class="cvr-ai-logo">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <span class="cvr-ai-title">Employable AI</span>
+          </div>
+          <div class="cvr-ai-messages" id="cvr-ai-messages">
+            <div class="cvr-ai-msg cvr-ai-msg--bot">
+              <p>Your AI document editor. Tell me what to change — I'll handle the rest. For example:</p>
+              <ul>
+                <li>"Make my summary stronger"</li>
+                <li>"Add bullet points to my experience"</li>
+                <li>"Make the headings bold"</li>
+                <li>"Fix the formatting"</li>
+                <li>"Write a CV for a software engineer"</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cvr-ai-input-row">
+            <textarea class="cvr-ai-input" id="cvr-ai-input" placeholder="Ask AI to edit your document…" rows="1"></textarea>
+            <button class="cvr-ai-send-btn" id="cvr-ai-send-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Print frame for PDF export -->
+      <iframe id="cvr-print-frame" style="display:none;"></iframe>
+    </div>
+
+    <!-- ── EMPLOYABLE AI VIEW ── -->
+    <div class="view-panel" id="view-messages" data-view-panel="messages" style="display:none; flex-direction:row;">
+
+      <!-- History sidebar -->
+      <div class="ai-history-sidebar" id="ai-history-sidebar">
+        <div class="ai-history-head">
+          <span>Conversations</span>
+          <button class="ai-history-collapse-btn" id="ai-history-collapse-btn" title="Collapse">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+        </div>
+        <div class="ai-history-list" id="ai-history-list"></div>
+        <div class="ai-new-chat-footer">
+          <button class="ai-new-chat-footer-btn" id="ai-new-chat-side-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Chat
+          </button>
+        </div>
+      </div>
+      <!-- Expand button shown when collapsed -->
+      <button class="ai-history-expand-btn" id="ai-history-expand-btn" title="Show conversations" style="display:none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <!-- Main AI area -->
+      <div class="ai-main-area" id="ai-main-area">
+
+        <!-- Persistent header -->
+        <div class="topbar" style="flex-shrink:0; padding-top:16px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="cvr-ai-logo">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <span class="cvr-ai-title" style="font-size:16px;">Employable AI</span>
+          </div>
+        </div>
+
+        <!-- Welcome screen -->
+        <div class="ai-welcome" id="ai-welcome">
+          <div class="ai-welcome-inner">
+            <h1 class="ai-greeting" id="ai-greeting">Hey, there. Ready to dive in?</h1>
+            <div class="ai-input-container">
+              <div class="ai-input-bar">
+                <input type="text" class="ai-text-input" id="chat-input" placeholder="Ask anything about your employability…" maxlength="600" autocomplete="off">
+                <button class="ai-send-btn" id="chat-send-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat view -->
+        <div class="ai-chat-view" id="ai-chat-view" style="display:none; flex-direction:column; flex:1;">
+          <div class="chat-log" id="chat-log" style="flex:1;"></div>
+          <div class="chat-input-bar-wrap">
+            <div class="ai-input-bar" style="margin:0;">
+              <input type="text" class="ai-text-input" id="chat-input-bottom" placeholder="Ask anything…" maxlength="600" autocomplete="off">
+              <button class="ai-send-btn" id="chat-send-btn-bottom">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /ai-main-area -->
+    </div>
+
+    <!-- ── APPLICATIONS VIEW ── -->
+    <div class="view-panel" id="view-applications" data-view-panel="applications" style="display:none; flex-direction:column; align-items:center; justify-content:center;">
+      <div class="card" style="text-align:center; padding:48px 56px; display:flex; flex-direction:column; align-items:center; gap:12px; max-width:400px;">
+        <div style="font-size:32px;">🚀</div>
+        <h2 style="font-size:20px; font-weight:800; letter-spacing:-0.03em; margin:0;">Coming Soon</h2>
+        <p style="font-size:13px; color:var(--text-faint); margin:0; line-height:1.6;">Employable will find and apply to relevant jobs on your behalf — automatically. You can also manually track any role you apply to yourself. We handle the boring parts so you can focus on showing up.</p>
+      </div>
+    </div>
+
+    <!-- ── SUPPORT VIEW ── -->
+    <div class="view-panel" id="view-support" data-view-panel="support" style="display:none;">
+      <div class="topbar">
+        <div><h1>Support</h1><div class="meta">Help and frequently asked questions</div></div>
+      </div>
+      <div class="card" style="flex:1; overflow-y:auto;">
+        <div class="eyebrow">How it works</div>
+        <ul class="insight-list" style="margin-bottom:24px; gap:12px;">
+          <li>Your employability score updates automatically whenever you upload or remove a document, or add/remove a skill — no manual refresh needed.</li>
+          <li>Skills are scored by market demand weight. High-demand technical skills (Python, AWS, AI) contribute significantly more than commodity skills (Typing, Filing).</li>
+          <li>Setting a target role helps the Market Competitiveness dimension benchmark your profile against your actual goal.</li>
+          <li>The more independent supporting documents you upload (certificates, references, transcripts), the higher your Documentation Strength and Evidence Credibility scores can go.</li>
+          <li>Only one person's documents can be associated with an account. Removing all documents will reset your account to onboarding on next sign-in.</li>
+        </ul>
+        <div class="eyebrow">Contact us</div>
+        <p style="color:var(--text-mid); font-size:13.5px; margin-bottom:16px;">We're here if something doesn't add up.</p>
+        <a href="mailto:support@employable.app" class="btn btn-ghost btn-sm">support@employable.app</a>
+        <div style="margin-top:20px;">
+          <a href="{{ url_for('privacy_policy') }}" class="btn btn-ghost btn-sm" target="_blank">View Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══════════ MOBILE TAB BAR ══════════ -->
+  <nav class="mobile-tabbar">
+    <div class="tab-item active" data-view="profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+    </div>
+    <div class="tab-item" data-view="insights">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="tab-item" data-view="messages">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="tab-item" data-view="applications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+    </div>
+    <div class="tab-item" data-view="support">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+    </div>
+  </nav>
+
+</div><!-- /app-shell -->
+
+<!-- ══════════ EDIT PROFILE MODAL ══════════ -->
+<div class="modal-overlay" id="edit-profile-modal" style="display:none;">
+  <div class="modal-card" style="width:440px; max-width:95vw;">
+    <div class="modal-head">
+      <h3>Edit Profile</h3>
+      <button class="modal-close" id="edit-profile-modal-close" aria-label="Close">×</button>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:22px;">
+      <div class="profile-avatar" id="edit-profile-avatar" style="width:76px;height:76px;font-size:23px;cursor:pointer;" title="Click to change photo">??</div>
+      <div style="color:var(--text-faint);font-size:12px;margin-top:7px;">Click to change photo</div>
+      <input type="file" id="avatar-file-input" accept="image/*" style="display:none;">
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text" id="ep-full-name" placeholder="Your full name" maxlength="120"></div>
+      <div class="form-group"><label class="form-label">Headline</label><input class="form-input" type="text" id="ep-headline" placeholder="e.g. Insurance Broker · 5 years" maxlength="160"></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="ep-email" placeholder="you@example.com" maxlength="200"></div>
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" id="ep-phone" placeholder="+27 000 000 0000" maxlength="30"></div>
+      <div class="form-group"><label class="form-label">Location</label><input class="form-input" type="text" id="ep-location" placeholder="City, Country" maxlength="120"></div>
+    </div>
+    <div style="margin-top:16px;">
+      <label class="form-label">Skills</label>
+      <div id="ep-skills-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:32px;"></div>
+      <div style="display:flex;gap:6px;">
+        <input class="form-input" type="text" id="ep-new-skill" placeholder="Add a skill…" maxlength="60" style="flex:1;">
+        <button class="btn btn-accent btn-sm" id="ep-add-skill-btn">Add</button>
+      </div>
+    </div>
+    <div style="margin-top:20px; display:flex; gap:8px; justify-content:flex-end;">
+      <button class="btn btn-ghost btn-sm" id="edit-profile-cancel-btn">Cancel</button>
+      <button class="btn btn-accent btn-sm" id="edit-profile-save-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ DIMENSION INFO MODAL ══════════ -->
+<div class="modal-overlay" id="dim-info-modal" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="dim-info-title">Dimension</h3>
+      <button class="modal-close" id="dim-info-close" aria-label="Close">×</button>
+    </div>
+    <div id="dim-info-body" style="color:var(--text-mid); font-size:13.5px; line-height:1.7;"></div>
+  </div>
+</div>
+
+<!-- ══════════ DOCUMENT INSIGHT MODAL ══════════ -->
+<div class="modal-overlay" id="doc-insight-modal" style="display:none;">
+  <div class="modal-card" style="max-width:540px;">
+    <div class="modal-head">
+      <h3 id="doc-insight-title">Document Insight</h3>
+      <button class="modal-close" id="doc-insight-close" aria-label="Close">×</button>
+    </div>
+    <div id="doc-insight-body" style="color:var(--text-mid); font-size:13.5px; line-height:1.7;"></div>
+  </div>
+</div>
+
+<!-- ══════════ ROADMAP MODAL ══════════ -->
+<div class="modal-overlay" id="roadmap-modal" style="display:none;">
+  <div class="modal-card roadmap-modal-card">
+    <div class="modal-head">
+      <div>
+        <h3>Your Improvement Roadmap</h3>
+        <div style="font-size:12px; color:var(--text-faint); margin-top:3px;">Every realistic action toward a 10.00 / 10 rating</div>
+      </div>
+      <button class="modal-close" id="roadmap-close" aria-label="Close">×</button>
+    </div>
+    <div id="roadmap-list"></div>
+  </div>
+</div>
+
+<!-- ══════════ ROADMAP ITEM DETAIL MODAL ══════════ -->
+<div class="modal-overlay" id="roadmap-item-detail-modal" style="display:none;">
+  <div class="modal-card" style="max-width:680px;">
+    <div class="modal-head">
+      <h3 id="rid-title" style="font-size:16px; line-height:1.4;"></h3>
+      <button class="modal-close" id="rid-close" aria-label="Close">×</button>
+    </div>
+    <div id="rid-body" style="display:flex; flex-direction:column; gap:20px; padding-top:4px;"></div>
+  </div>
+</div>
+
+<!-- ══════════ OWNERSHIP CONFIRMATION MODAL ══════════ -->
+<div class="modal-overlay" id="ownership-modal" style="display:none;">
+  <div class="modal-card" style="max-width:380px; text-align:center;">
+    <div style="width:52px; height:52px; border-radius:50%; background:var(--accent-glow); border:1px solid var(--accent-dim); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-bright)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <h3 style="margin-bottom:10px; font-size:17px;">Do these documents belong to you?</h3>
+    <p style="color:var(--text-faint); font-size:13px; line-height:1.65; margin-bottom:24px;">Please confirm all selected files are your own documents. This is required by our honesty policy.</p>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-ghost" id="ownership-no-btn" style="flex:1;">No</button>
+      <button class="btn btn-accent" id="ownership-yes-btn" style="flex:1;">Yes, they're mine</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LOADING ══════════ -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <div id="loading-text">Analysing your documents…</div>
+</div>
+
+<script>
+  window.INITIAL_STATE = {{ state | tojson }};
+  // Restore saved view synchronously before first paint — eliminates flash
+  (function () {
+    var VALID = { profile:1, messages:1, insights:1, applications:1, support:1 };
+    var v = localStorage.getItem("emp_active_view") || "profile";
+    if (!VALID[v]) v = "profile";
+    var panel = document.getElementById("view-" + v);
+    if (panel) panel.style.display = "flex";
+    // Mark nav active
+    document.querySelectorAll(".nav-item[data-view], .tab-item[data-view]").forEach(function(el) {
+      el.classList.toggle("active", el.getAttribute("data-view") === v);
+    });
+  })();
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

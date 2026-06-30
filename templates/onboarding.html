@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Get Started — Employable{% endblock %}
+{% block content %}
+<a href="{{ url_for('logout_page') }}" class="onboard-back-btn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+  Back
+</a>
+<div class="onboard-shell">
+  <div class="onboard-card">
+    <div class="onboard-wordmark">Employable<span class="dot">.</span></div>
+
+    <!-- ── STEP 1: DISCLAIMER ── -->
+    <div id="disclaimer-step" {% if current_user and current_user.get('disclaimer_accepted') %}style="display:none;"{% endif %}>
+      <div class="disclaimer-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Honesty Policy
+      </div>
+      <h1>Before you continue</h1>
+      <p class="onboard-sub">
+        Employable analyses information exactly as you present it. We have no way to verify whether documents or information are genuine — it is possible for people to misrepresent themselves. The accuracy and usefulness of your employability analysis depends entirely on the accuracy of what you provide.
+      </p>
+      <p class="onboard-sub" style="margin-top:8px;">
+        To receive an analysis that is genuinely useful to you, you must be truthful, transparent, and honest throughout every step of using this app.
+      </p>
+
+      <div class="disclaimer-checks">
+        <label class="disclaimer-check">
+          <input type="checkbox" class="disclaimer-checkbox" id="check1">
+          <span class="check-box"></span>
+          <span class="check-text">I will only upload documents that genuinely belong to me.</span>
+        </label>
+        <label class="disclaimer-check">
+          <input type="checkbox" class="disclaimer-checkbox" id="check2">
+          <span class="check-box"></span>
+          <span class="check-text">I will only add skills I genuinely possess.</span>
+        </label>
+        <label class="disclaimer-check">
+          <input type="checkbox" class="disclaimer-checkbox" id="check3">
+          <span class="check-box"></span>
+          <span class="check-text">I understand the app cannot verify my honesty, and that the quality of my analysis depends on the accuracy of the information I provide.</span>
+        </label>
+      </div>
+
+      <button class="btn btn-accent btn-block" id="accept-disclaimer-btn" disabled style="margin-top:24px;">
+        I Accept — Continue
+      </button>
+      <p style="text-align:center; font-size:11.5px; color:var(--text-faint); margin-top:12px;">
+        By clicking I Accept, you agree to use Employable honestly and in good faith.
+        <a href="{{ url_for('privacy_policy') }}" target="_blank" style="color:var(--accent-bright);">Privacy Policy</a>
+      </p>
+    </div>
+
+    <!-- ── STEP 2: UPLOAD ── -->
+    <div id="upload-step" {% if not (current_user and current_user.get('disclaimer_accepted')) %}style="display:none;"{% endif %}>
+      <h1>Upload your documents</h1>
+      <p class="onboard-sub">
+        Upload your CV and any supporting documents — certificates, references, transcripts, licences, or anything else that supports your profile. The more evidence you provide, the more accurate and detailed your analysis will be.
+      </p>
+
+      <div class="upload-zone" id="upload-zone">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="margin-bottom:8px; opacity:0.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div><strong>Click to upload</strong> or drag documents here</div>
+        <div style="margin-top:4px; font-size:11px; color:var(--text-faint);">CV, certificates, references, transcripts — any document that supports your profile</div>
+      </div>
+      <input type="file" id="file-input" multiple style="display:none;">
+
+      <div class="doc-list" id="doc-list">
+        {% for d in documents %}
+        <div class="doc-row" data-doc-id="{{ d.id }}">
+          <span class="name">{{ d.filename }} <span class="badge">{{ d.file_type.upper() }}</span></span>
+          <span class="remove-doc" data-doc-id="{{ d.id }}" title="Remove document">&times;</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div id="onboard-status" class="onboard-status" style="display:none;"></div>
+
+      <div id="conflict-box" class="conflict-box" style="display:none;">
+        <div class="conflict-title">Some of these documents don't look like they belong to the same person.</div>
+        <p class="conflict-sub">Select every document that's actually yours. Anything left unchecked will be removed.</p>
+        <div id="conflict-options" class="conflict-options"></div>
+      </div>
+
+      <button class="btn btn-accent btn-block" id="continue-btn" style="margin-top:22px;" disabled>
+        Continue to Dashboard
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── OWNERSHIP CONFIRMATION MODAL ── -->
+<div class="modal-overlay" id="ownership-modal" style="display:none;">
+  <div class="modal-card" style="max-width:380px; text-align:center;">
+    <div style="width:52px; height:52px; border-radius:50%; background:var(--accent-glow); border:1px solid var(--accent-dim); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-bright)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <h3 style="margin-bottom:10px; font-size:17px;">Do these documents belong to you?</h3>
+    <p style="color:var(--text-faint); font-size:13px; line-height:1.6; margin-bottom:24px;">Please confirm that all selected documents are your own. Uploading documents that belong to someone else is a violation of our terms.</p>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-ghost" id="ownership-no-btn" style="flex:1;">No</button>
+      <button class="btn btn-accent" id="ownership-yes-btn" style="flex:1;">Yes, they're mine</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <div id="loading-text">Working…</div>
+</div>
+
+<script src="{{ url_for('static', filename='js/onboarding.js') }}"></script>
+{% endblock %}

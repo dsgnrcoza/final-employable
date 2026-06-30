@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Employable — Become Employable{% endblock %}
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-visual">
+    <div class="auth-wordmark">Employable<span class="dot">.</span></div>
+    <h1 class="auth-headline">This is where you become <em class="dot">employable</em>.</h1>
+  </div>
+  <div class="auth-form-side">
+    <div class="auth-form-box">
+      <h1>Welcome</h1>
+      <span class="sub">Upload your CV. Discover your strengths and weaknesses. Improve your Employability Score with evidence-based scoring built for serious candidates.</span>
+      <a href="{{ url_for('login_page') }}" class="btn btn-gold btn-block">Sign In</a>
+      <div style="height:12px"></div>
+      <a href="{{ url_for('signup_page') }}" class="btn btn-ghost btn-block">Create an Account</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
