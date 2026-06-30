@@ -376,7 +376,12 @@ def get_dashboard_state(user_id: int) -> dict:
             pass  # ATS override must never break the main flow
 
     avatar_path = user.get("avatar_path") or ""
-    avatar_url = f"/static/{avatar_path}" if avatar_path else ""
+    if avatar_path.startswith("data:"):
+        avatar_url = avatar_path
+    elif avatar_path:
+        avatar_url = f"/static/{avatar_path}"
+    else:
+        avatar_url = ""
 
     return {
         "profile": {

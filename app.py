@@ -488,6 +488,7 @@ def api_update_profile():
 @app.route("/api/profile/photo", methods=["POST"])
 @auth.login_required
 def api_upload_avatar():
+    import base64
     user = auth.current_user()
     f = request.files.get("photo")
     if not f or f.filename == "":
@@ -495,14 +496,11 @@ def api_upload_avatar():
     ext = f.filename.rsplit(".", 1)[-1].lower() if "." in f.filename else ""
     if ext not in ALLOWED_IMAGE_EXTENSIONS:
         return jsonify({"ok": False, "error": "Unsupported image type."}), 400
-    user_avatar_dir = os.path.join(AVATAR_ROOT, str(user["id"]))
-    os.makedirs(user_avatar_dir, exist_ok=True)
-    filename = f"avatar.{ext}"
-    dest = os.path.join(user_avatar_dir, filename)
-    f.save(dest)
-    relative_path = f"avatars/{user['id']}/{filename}"
-    db.update_profile_fields(user["id"], avatar_path=relative_path)
-    return jsonify({"ok": True, "avatar_url": f"/static/{relative_path}", "state": pipeline.get_dashboard_state(user["id"])})
+    mime = "image/jpeg" if ext in ("jpg", "jpeg") else f"image/{ext}"
+    encoded = base64.b64encode(f.read()).decode("ascii")
+    data_uri = f"data:{mime};base64,{encoded}"
+    db.update_profile_fields(user["id"], avatar_path=data_uri)
+    return jsonify({"ok": True, "avatar_url": data_uri, "state": pipeline.get_dashboard_state(user["id"])})
 
 
 @app.route("/api/clear-cache", methods=["POST"])
