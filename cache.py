@@ -48,7 +48,10 @@ import json
 import os
 import time
 
-CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
+if os.environ.get("VERCEL"):
+    CACHE_DIR = "/tmp/employable_cache"
+else:
+    CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
 
 
 def _ensure_cache_dir():
